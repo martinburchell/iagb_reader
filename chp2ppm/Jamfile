@@ -1,0 +1,1 @@
+Main bin/chp2ppm : src/chp2ppm.c ;

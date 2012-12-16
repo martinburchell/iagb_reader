@@ -13,4 +13,9 @@
 *.a
 
 cds/
+chp/
+ppm/
+.deps
 *~
+depend
+bin
