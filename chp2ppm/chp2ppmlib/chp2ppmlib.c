@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +8,7 @@
 
 static unsigned char g_header[HEADER_SIZE];
 
-static unsigned int chp2ppm_read_int32( unsigned char *buffer )
+static unsigned int chp2ppmlib_read_int32( unsigned char *buffer )
 {
     return (unsigned int)( (unsigned int)(buffer[0]) + 
                            ((unsigned int)(buffer[1]) << 8) + 
@@ -17,12 +16,12 @@ static unsigned int chp2ppm_read_int32( unsigned char *buffer )
                            ((unsigned int)(buffer[3]) << 24));
 }
 
-static void chp2ppm_write_line(FILE *out_fp, const char *line)
+static void chp2ppmlib_write_line(FILE *out_fp, const char *line)
 {
     fprintf(out_fp, "%s%c", line, 0x0a);
 }
 
-static int chp2ppm_process( FILE *in_fp,
+extern int chp2ppmlib_process( FILE *in_fp,
                             FILE *out_fp )
 {
     int rc = -1;
@@ -52,24 +51,24 @@ static int chp2ppm_process( FILE *in_fp,
         goto out;
     }
 
-    num_tiles_x = chp2ppm_read_int32( g_header + 0x08 );
-    num_tiles_y = chp2ppm_read_int32( g_header + 0x0c );
+    num_tiles_x = chp2ppmlib_read_int32( g_header + 0x08 );
+    num_tiles_y = chp2ppmlib_read_int32( g_header + 0x0c );
 
-    tile_width = chp2ppm_read_int32( g_header + 0x10 );
-    tile_height = chp2ppm_read_int32( g_header + 0x14 );
+    tile_width = chp2ppmlib_read_int32( g_header + 0x10 );
+    tile_height = chp2ppmlib_read_int32( g_header + 0x14 );
 
-    tile_size = chp2ppm_read_int32( g_header + 0x18 );
+    tile_size = chp2ppmlib_read_int32( g_header + 0x18 );
 
     /* round up to nearest 16 */
     padded_tile_width = (tile_width + 16 - 1) & ~(16 - 1); 
 
-    chp2ppm_write_line(out_fp, "P6");
-    chp2ppm_write_line(out_fp, "# CREATOR: CHP2PPM");
+    chp2ppmlib_write_line(out_fp, "P6");
+    chp2ppmlib_write_line(out_fp, "# CREATOR: CHP2PPM");
 
     sprintf(tile_metadata, "%d %d",
             num_tiles_x * tile_width, num_tiles_y * tile_height);
-    chp2ppm_write_line(out_fp, tile_metadata); 
-    chp2ppm_write_line(out_fp, "255");
+    chp2ppmlib_write_line(out_fp, tile_metadata); 
+    chp2ppmlib_write_line(out_fp, "255");
                        
 
     printf("Tile width: %u\n", tile_width);
@@ -93,7 +92,7 @@ static int chp2ppm_process( FILE *in_fp,
                 unsigned int column;
                 unsigned int tile_start;
 
-                tile_start = chp2ppm_read_int32( g_header + TILE_OFFSET + tile_index * 8 );
+                tile_start = chp2ppmlib_read_int32( g_header + TILE_OFFSET + tile_index * 8 );
                 fseek( in_fp, tile_start + row * padded_tile_width, SEEK_SET );
 
                 for ( column = 0; column < tile_width; column++ )
@@ -117,48 +116,5 @@ static int chp2ppm_process( FILE *in_fp,
     rc = 0;
 
 out:
-    return rc;
-}
-
-int main( int argc, char *argv[] )
-{
-    int rc;
-
-    FILE *in_fp;
-    FILE *out_fp;
-
-    if ( argc < 3 )
-    {
-        fprintf( stderr, "Usage: %s <file_in> <file_out>\n", argv[0] );
-        exit( -1 );
-    }
-
-    in_fp = fopen( argv[1], "r" );
-
-    if ( !in_fp )
-    {
-        fprintf( stderr,
-                 "Unable to open file '%s' for read\n",
-                 argv[1] );
-        exit(-1);
-    }
-
-    out_fp = fopen( argv[2], "w" );
-
-    if ( !out_fp )
-    {
-        fclose( in_fp );
-
-        fprintf( stderr,
-                 "Unable to open file '%s' for write\n",
-                 argv[2] );
-        exit(-1);
-    }
-
-    rc = chp2ppm_process( in_fp, out_fp );
-
-    fclose( in_fp );
-    fclose( out_fp );
-
     return rc;
 }

@@ -1,1 +1,5 @@
-Main bin/chp2ppm : src/chp2ppm.c ;
+SubDir TOP ;
+SubInclude TOP chp2ppmlib ;
+Library main : chp2ppm.c ;
+Main chp2ppm ;
+LinkLibraries chp2ppm : main chp2ppmlib ;

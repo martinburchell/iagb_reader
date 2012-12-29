@@ -1,0 +1,2 @@
+TOP = ./ ;
+ALL_LOCATE_TARGET = bin ;

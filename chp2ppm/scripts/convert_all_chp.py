@@ -11,6 +11,7 @@ chp_dirs = (os.path.join(disc_a, 'Pictures', 'SCALES', '50K'),
             os.path.join(disc_b, 'Pictures', 'SCALES', '25k'))
 
 ppm_dir = os.path.join('..', '..', 'ppm')
+chp2ppm_bin = os.path.join('..', 'bin', 'chp2ppm')
 
 for chp_dir in chp_dirs:
     print chp_dir
@@ -20,5 +21,5 @@ for chp_dir in chp_dirs:
         (map_name, ext) = os.path.splitext(tail)
         ppm_name = map_name + '.ppm'
         ppm_file = os.path.join(ppm_dir, ppm_name)
-        command = "./chp2ppm %s %s" % (chp_path, ppm_file)
+        command = "%s %s %s" % (chp2ppm_bin, chp_path, ppm_file)
         os.system(command)

@@ -1,0 +1,2 @@
+SubDir TOP chp2ppmlib ;
+Library chp2ppmlib : chp2ppmlib.c ;
