@@ -1,5 +1,20 @@
 SubDir TOP ;
-SubInclude TOP chp2ppmlib ;
+
 Library main : chp2ppm.c ;
 Main chp2ppm ;
 LinkLibraries chp2ppm : main chp2ppmlib ;
+
+CCFLAGS on chp2ppm$(SUFOBJ) = $(INCLUDE_CHP2PPMLIB) ;
+
+
+Library test : chp2ppmlib_test.c ;
+Main chp2ppmlibtest ;
+LINKLIBS on chp2ppmlibtest$(SUFEXE) = $(CUNIT_LIBS) ;
+
+OPTIM on chp2ppmlib_test$(SUFOBJ) = $(TEST_OPTIM) ;
+CCFLAGS on chp2ppmlib_test$(SUFOBJ) = $(TEST_CCFLAGS) $(INCLUDE_TYPES) $(INCLUDE_CHP2PPMLIB) $(INCLUDE_MEMLIB) ;
+
+LinkLibraries chp2ppmlibtest : test chp2ppmlib memlib ;
+
+SubInclude TOP chp2ppmlib ;
+SubInclude TOP memlib ;

@@ -1,2 +1,4 @@
 SubDir TOP chp2ppmlib ;
 Library chp2ppmlib : chp2ppmlib.c ;
+
+CCFLAGS on chp2ppmlib$(SUFOBJ) = $(TEST_CCFLAGS) ;

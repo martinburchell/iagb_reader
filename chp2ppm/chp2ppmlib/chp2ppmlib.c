@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+#include "chp2ppmlib.h"
 
 #define HEADER_SIZE 0x740
 #define PALETTE_OFFSET 0x20
@@ -21,10 +21,9 @@ static void chp2ppmlib_write_line(FILE *out_fp, const char *line)
     fprintf(out_fp, "%s%c", line, 0x0a);
 }
 
-extern int chp2ppmlib_process( FILE *in_fp,
-                            FILE *out_fp )
+extern const char* chp2ppmlib_process(FILE *in_fp, FILE *out_fp)
 {
-    int rc = -1;
+    char *error = NULL;
     unsigned int num_read;
     unsigned int num_tiles_x;
     unsigned int num_tiles_y;
@@ -39,14 +38,14 @@ extern int chp2ppmlib_process( FILE *in_fp,
     num_read = fread( g_header, HEADER_SIZE, 1, in_fp );
     if ( num_read < 1 )
     {
-        fprintf( stderr, "Not a valid CHP file - header too short\n" );
+        error = "Not a valid CHP file - header too short";
 
         goto out;
     }
 
     if ( strncmp( (const char *)g_header, "PCv", 3 ) != 0 )
     {
-        fprintf( stderr, "Not a valid CHP file - no marker found\n" );
+        error = "Not a valid CHP file - no marker found";
 
         goto out;
     }
@@ -113,8 +112,6 @@ extern int chp2ppmlib_process( FILE *in_fp,
         }
     }
 
-    rc = 0;
-
 out:
-    return rc;
+    return error;
 }

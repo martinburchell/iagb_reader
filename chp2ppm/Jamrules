@@ -1,2 +1,13 @@
 TOP = ./ ;
 ALL_LOCATE_TARGET = bin ;
+CUNIT_LIBS = -lcunit ;
+
+INCLUDE_TYPES = -I../../types/ ;
+INCLUDE_CHP2PPMLIB = -Ichp2ppmlib/ ;
+INCLUDE_MEMLIB = -Imemlib/ ;
+
+WARNINGS = -Wall -W -Wunused -Wpointer-arith -Wcast-align -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Werror-implicit-function-declaration -Wundef ;
+
+COMMON_CCFLAGS = $(WARNINGS) --unsigned-char ;
+TEST_CCFLAGS = $(COMMON_CCFLAGS) -g ;
+TEST_OPTIM = -O0 ;

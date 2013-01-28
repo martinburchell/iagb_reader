@@ -2,9 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "chp2ppmlib.h"
+
 int main( int argc, char *argv[] )
 {
-    int rc;
+    const char *error;
+    int rc = 0;
 
     FILE *in_fp;
     FILE *out_fp;
@@ -37,7 +40,12 @@ int main( int argc, char *argv[] )
         exit(-1);
     }
 
-    rc = chp2ppmlib_process( in_fp, out_fp );
+    error = chp2ppmlib_process( in_fp, out_fp );
+    if (error != NULL)
+    {
+        fprintf(stderr, "%s\n", error);
+        rc = -1;
+    }
 
     fclose( in_fp );
     fclose( out_fp );
